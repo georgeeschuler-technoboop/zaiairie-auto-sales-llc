@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin · Zaiairie Auto Sales</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { brand: { navy: '#0f1e34', navy2: '#162a47', gold: '#d4a64a', goldDark: '#b8902f' } },
+      fontFamily: { sans: ['system-ui','-apple-system','Segoe UI','Roboto','sans-serif'] },
+    }},
+  };
+</script>
+<style>
+  .img-tile { position: relative; }
+  .img-tile.dragging { opacity: 0.4; }
+  .img-tile.drag-over { outline: 3px dashed #d4a64a; }
+  .primary-badge { position: absolute; top: 4px; left: 4px; background: #d4a64a; color: #0f1e34; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
+</style>
+</head>
+<body class="font-sans bg-slate-100 min-h-screen text-slate-800">
+
+<!-- ===== LOGIN GATE ===== -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-8">
+    <div class="flex items-center gap-3 mb-6">
+      <svg viewBox="0 0 40 40" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" fill="#d4a64a" stroke="#b8902f" stroke-width="1.5"/>
+        <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0f1e34" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+        <line x1="11" y1="20" x2="29" y2="20" stroke="#0f1e34" stroke-width="1.5" opacity="0.4"/>
+      </svg>
+      <div>
+        <div class="font-bold">Zaiairie Auto Sales</div>
+        <div class="text-xs text-slate-500 uppercase tracking-wider">Admin</div>
+      </div>
+    </div>
+    <h1 class="text-2xl font-bold text-brand-navy mb-2">Sign In</h1>
+    <p class="text-sm text-slate-600 mb-6">Enter the admin password to manage inventory.</p>
+    <form onsubmit="return tryLogin(event)" class="space-y-4">
+      <input id="login-password" type="password" placeholder="Password"
+             class="w-full border border-slate-300 rounded px-3 py-2.5 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none"
+             autofocus />
+      <button class="w-full bg-brand-navy text-white py-2.5 rounded font-semibold hover:bg-brand-navy2 transition">
+        Sign In
+      </button>
+      <p id="login-error" class="text-sm text-red-600 hidden">Wrong password — try again.</p>
+    </form>
+    <p class="mt-6 text-xs text-slate-500">
+      <strong>Demo password: admin123</strong><br/>
+      In production this will be replaced with real authentication.
+    </p>
+  </div>
+</div>
+
+<!-- ===== ADMIN APP ===== -->
+<div id="admin-app" class="hidden">
+
+  <!-- Demo banner -->
+  <div class="bg-amber-100 border-b border-amber-300 text-amber-900 text-sm px-4 py-2 text-center">
+    <strong>Demo mode</strong> — changes are saved to this browser only. Backend (Supabase) gets wired up in Phase 2.
+  </div>
+
+  <!-- Top nav -->
+  <header class="bg-brand-navy text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+      <div class="flex items-center gap-2.5">
+        <svg viewBox="0 0 40 40" class="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="19" fill="#d4a64a" stroke="#b8902f" stroke-width="1.5"/>
+          <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0f1e34" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+          <line x1="11" y1="20" x2="29" y2="20" stroke="#0f1e34" stroke-width="1.5" opacity="0.4"/>
+        </svg>
+        <div class="leading-tight">
+          <div class="font-bold text-base">Zaiairie Admin</div>
+          <div class="text-[10px] text-brand-gold uppercase tracking-widest">Inventory Manager</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="index.html" target="_blank" class="text-sm text-slate-300 hover:text-brand-gold">View Site →</a>
+        <button onclick="logout()" class="text-sm text-slate-300 hover:text-brand-gold">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-brand-navy">Inventory</h1>
+        <p class="text-sm text-slate-600"><span id="count-badge"></span></p>
+      </div>
+      <button onclick="openVehicleEditor()" class="bg-brand-gold text-brand-navy px-4 py-2.5 rounded font-semibold hover:bg-brand-goldDark transition">
+        + Add Vehicle
+      </button>
+    </div>
+
+    <div id="admin-list" class="space-y-3"></div>
+  </main>
+
+  <!-- ===== ADD/EDIT MODAL ===== -->
+  <div id="editor-modal" class="fixed inset-0 bg-black/70 z-50 hidden items-start justify-center overflow-y-auto p-4">
+    <div class="bg-white rounded-lg max-w-3xl w-full my-8 overflow-hidden shadow-2xl">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-slate-200 sticky top-0 bg-white z-10">
+        <h3 id="editor-title" class="text-xl font-bold text-brand-navy">Add Vehicle</h3>
+        <button onclick="closeVehicleEditor()" class="text-slate-400 hover:text-slate-700 text-3xl leading-none">&times;</button>
+      </div>
+
+      <form id="editor-form" class="p-6 space-y-5" onsubmit="return saveVehicle(event)">
+        <input type="hidden" id="f-id" />
+
+        <!-- Year / Make / Model / Trim -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Year *</label>
+            <input id="f-year" type="number" min="1980" max="2030" required class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm" /></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Make *</label>
+            <input id="f-make" type="text" required class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm" /></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Model *</label>
+            <input id="f-model" type="text" required class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm" /></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Trim</label>
+            <input id="f-trim" type="text" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm" /></div>
+        </div>
+
+        <!-- Price / Mileage -->
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Price ($) *</label>
+            <input id="f-price" type="number" min="0" required class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm" /></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Mileage *</label>
+            <input id="f-mileage" type="number" min="0" required class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm" /></div>
+        </div>
+
+        <!-- Body / Transmission / Drivetrain / Fuel -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Body</label>
+            <select id="f-body" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm bg-white">
+              <option>Sedan</option><option>SUV</option><option>Truck</option><option>Coupe</option>
+              <option>Hatchback</option><option>Wagon</option><option>Van</option><option>Convertible</option>
+            </select></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Transmission</label>
+            <select id="f-transmission" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm bg-white">
+              <option>Automatic</option><option>Manual</option><option>CVT</option>
+            </select></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Drivetrain</label>
+            <select id="f-drivetrain" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm bg-white">
+              <option>FWD</option><option>RWD</option><option>AWD</option><option>4WD</option>
+            </select></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Fuel</label>
+            <select id="f-fuel" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm bg-white">
+              <option>Gasoline</option><option>Diesel</option><option>Hybrid</option><option>Electric</option>
+            </select></div>
+        </div>
+
+        <!-- Color / VIN / Status -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Color</label>
+            <input id="f-color" type="text" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm" /></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">VIN</label>
+            <input id="f-vin" type="text" maxlength="17" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm font-mono" /></div>
+          <div><label class="text-xs font-semibold text-slate-700 uppercase">Status</label>
+            <select id="f-status" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm bg-white">
+              <option value="available">Available</option>
+              <option value="pending">Sale Pending</option>
+              <option value="sold">Sold</option>
+            </select></div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 uppercase">Description</label>
+          <textarea id="f-description" rows="3" class="w-full border border-slate-300 rounded px-3 py-2 mt-1 text-sm"
+            placeholder="Highlights — clean Carfax, new tires, recent inspection, anything notable."></textarea>
+        </div>
+
+        <div class="flex items-center">
+          <input id="f-featured" type="checkbox" class="mr-2 w-4 h-4 accent-brand-gold" />
+          <label for="f-featured" class="text-sm">Show this car in "Featured" on the homepage</label>
+        </div>
+
+        <!-- ===== Image manager ===== -->
+        <div>
+          <label class="text-xs font-semibold text-slate-700 uppercase">Photos</label>
+          <p class="text-xs text-slate-500 mb-2">Drag to reorder. The first photo is the cover photo shown on the listing card.</p>
+
+          <div id="image-grid" class="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3"></div>
+
+          <label class="block border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-brand-gold hover:bg-slate-50 transition">
+            <input type="file" id="image-upload" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)" />
+            <div class="text-slate-500">
+              <div class="text-3xl mb-1">📷</div>
+              <div class="text-sm font-medium">Click to add photos, or drop them here</div>
+              <div class="text-xs mt-1">Multiple images supported · JPG, PNG</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-slate-200">
+          <button type="button" onclick="closeVehicleEditor()" class="flex-1 border border-slate-300 text-slate-700 px-4 py-2.5 rounded font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" class="flex-1 bg-brand-gold text-brand-navy px-4 py-2.5 rounded font-semibold hover:bg-brand-goldDark">
+            Save Vehicle
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== DELETE CONFIRM MODAL ===== -->
+  <div id="confirm-modal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+      <h3 class="text-lg font-bold text-brand-navy mb-2">Delete this vehicle?</h3>
+      <p id="confirm-text" class="text-sm text-slate-600 mb-6"></p>
+      <div class="flex gap-3">
+        <button onclick="closeConfirm()" class="flex-1 border border-slate-300 text-slate-700 px-4 py-2 rounded font-semibold hover:bg-slate-50">Cancel</button>
+        <button id="confirm-yes" class="flex-1 bg-red-600 text-white px-4 py-2 rounded font-semibold hover:bg-red-700">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="shared.js"></script>
+<script>
+  // ===== Auth (placeholder — Supabase Auth replaces this in Phase 2) =====
+  const DEMO_PASSWORD = 'admin123';
+  const SESSION_KEY = 'zaiairie_admin_session';
+
+  function tryLogin(e) {
+    e.preventDefault();
+    const pw = document.getElementById('login-password').value;
+    if (pw === DEMO_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      showApp();
+    } else {
+      document.getElementById('login-error').classList.remove('hidden');
+    }
+    return false;
+  }
+
+  function logout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-app').classList.remove('hidden');
+    renderList();
+  }
+
+  if (sessionStorage.getItem(SESSION_KEY) === '1') showApp();
+
+  // ===== Inventory list =====
+  function statusPill(status) {
+    if (status === 'sold')    return '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-semibold uppercase">Sold</span>';
+    if (status === 'pending') return '<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs font-semibold uppercase">Pending</span>';
+    return '<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-semibold uppercase">Available</span>';
+  }
+
+  function renderList() {
+    const all = InventoryAPI.getAll().sort((a,b) => b.id - a.id);
+    document.getElementById('count-badge').textContent =
+      `${all.length} vehicle${all.length === 1 ? '' : 's'} · ${all.filter(v => v.status === 'available').length} available`;
+
+    const list = document.getElementById('admin-list');
+    if (all.length === 0) {
+      list.innerHTML = '<div class="bg-white rounded-lg p-12 text-center text-slate-500">No vehicles yet. Click "Add Vehicle" to get started.</div>';
+      return;
+    }
+
+    list.innerHTML = all.map(v => {
+      const cover = (v.images && v.images[0]) || '';
+      const photoCount = (v.images || []).length;
+      return `
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col sm:flex-row">
+          <div class="sm:w-40 sm:h-32 flex-shrink-0 bg-slate-100">
+            ${cover
+              ? `<img src="${cover}" alt="" class="w-full h-32 sm:h-full object-cover" />`
+              : `<div class="w-full h-32 sm:h-full flex items-center justify-center text-slate-400 text-xs">No photo</div>`}
+          </div>
+          <div class="flex-1 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-bold text-brand-navy truncate">${titleOf(v)}</h3>
+                ${statusPill(v.status)}
+                ${v.featured ? '<span class="bg-brand-gold/20 text-brand-goldDark px-2 py-0.5 rounded text-xs font-semibold uppercase">Featured</span>' : ''}
+              </div>
+              <div class="text-sm text-slate-600 mt-1">
+                ${fmt(v.price)} · ${miles(v.mileage)} · ${v.body} · ${v.color || '—'} · 📷 ${photoCount}
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="openVehicleEditor(${v.id})" class="border border-slate-300 text-slate-700 px-3 py-1.5 rounded text-sm font-semibold hover:bg-slate-50">Edit</button>
+              <button onclick="askDelete(${v.id})" class="border border-red-300 text-red-700 px-3 py-1.5 rounded text-sm font-semibold hover:bg-red-50">Delete</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ===== Editor (add/edit) =====
+  let editorImages = []; // array of data URLs (or original URLs)
+  let editingId = null;
+
+  function openVehicleEditor(id = null) {
+    editingId = id;
+    editorImages = [];
+
+    const titleEl = document.getElementById('editor-title');
+    const form = document.getElementById('editor-form');
+    form.reset();
+    document.getElementById('f-id').value = '';
+
+    if (id !== null) {
+      const v = InventoryAPI.getById(id);
+      if (!v) return;
+      titleEl.textContent = 'Edit Vehicle';
+      document.getElementById('f-id').value = v.id;
+      document.getElementById('f-year').value = v.year || '';
+      document.getElementById('f-make').value = v.make || '';
+      document.getElementById('f-model').value = v.model || '';
+      document.getElementById('f-trim').value = v.trim || '';
+      document.getElementById('f-price').value = v.price || '';
+      document.getElementById('f-mileage').value = v.mileage || '';
+      document.getElementById('f-body').value = v.body || 'Sedan';
+      document.getElementById('f-transmission').value = v.transmission || 'Automatic';
+      document.getElementById('f-drivetrain').value = v.drivetrain || 'FWD';
+      document.getElementById('f-fuel').value = v.fuel || 'Gasoline';
+      document.getElementById('f-color').value = v.color || '';
+      document.getElementById('f-vin').value = v.vin || '';
+      document.getElementById('f-status').value = v.status || 'available';
+      document.getElementById('f-description').value = v.description || '';
+      document.getElementById('f-featured').checked = !!v.featured;
+      editorImages = [...(v.images || [])];
+    } else {
+      titleEl.textContent = 'Add Vehicle';
+      document.getElementById('f-year').value = new Date().getFullYear() - 5;
+    }
+
+    renderImageGrid();
+    const modal = document.getElementById('editor-modal');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+  }
+
+  function closeVehicleEditor() {
+    const modal = document.getElementById('editor-modal');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  }
+
+  async function handleImageUpload(e) {
+    const files = Array.from(e.target.files || []);
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      const dataUrl = await fileToDataUrl(file);
+      editorImages.push(dataUrl);
+    }
+    renderImageGrid();
+    e.target.value = ''; // reset input
+  }
+
+  function removeImage(idx) {
+    editorImages.splice(idx, 1);
+    renderImageGrid();
+  }
+
+  function makePrimary(idx) {
+    if (idx === 0) return;
+    const [img] = editorImages.splice(idx, 1);
+    editorImages.unshift(img);
+    renderImageGrid();
+  }
+
+  function renderImageGrid() {
+    const grid = document.getElementById('image-grid');
+    if (editorImages.length === 0) {
+      grid.innerHTML = '';
+      return;
+    }
+    grid.innerHTML = editorImages.map((src, i) => `
+      <div class="img-tile group" draggable="true" data-idx="${i}">
+        <img src="${src}" alt="photo ${i+1}" class="w-full h-24 object-cover rounded border border-slate-200" />
+        ${i === 0 ? '<span class="primary-badge">Cover</span>' : ''}
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition gap-1">
+          ${i !== 0 ? `<button type="button" onclick="makePrimary(${i})" class="bg-white text-slate-800 text-xs px-2 py-1 rounded font-semibold">Make cover</button>` : ''}
+          <button type="button" onclick="removeImage(${i})" class="bg-red-600 text-white text-xs px-2 py-1 rounded font-semibold">Remove</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Drag-and-drop reorder
+    grid.querySelectorAll('.img-tile').forEach(tile => {
+      tile.addEventListener('dragstart', (ev) => {
+        ev.dataTransfer.setData('text/plain', tile.dataset.idx);
+        tile.classList.add('dragging');
+      });
+      tile.addEventListener('dragend', () => tile.classList.remove('dragging'));
+      tile.addEventListener('dragover', (ev) => { ev.preventDefault(); tile.classList.add('drag-over'); });
+      tile.addEventListener('dragleave', () => tile.classList.remove('drag-over'));
+      tile.addEventListener('drop', (ev) => {
+        ev.preventDefault();
+        tile.classList.remove('drag-over');
+        const fromIdx = Number(ev.dataTransfer.getData('text/plain'));
+        const toIdx = Number(tile.dataset.idx);
+        if (fromIdx === toIdx) return;
+        const [moved] = editorImages.splice(fromIdx, 1);
+        editorImages.splice(toIdx, 0, moved);
+        renderImageGrid();
+      });
+    });
+  }
+
+  function saveVehicle(e) {
+    e.preventDefault();
+    const data = {
+      year: Number(document.getElementById('f-year').value),
+      make: document.getElementById('f-make').value.trim(),
+      model: document.getElementById('f-model').value.trim(),
+      trim: document.getElementById('f-trim').value.trim(),
+      price: Number(document.getElementById('f-price').value),
+      mileage: Number(document.getElementById('f-mileage').value),
+      body: document.getElementById('f-body').value,
+      transmission: document.getElementById('f-transmission').value,
+      drivetrain: document.getElementById('f-drivetrain').value,
+      fuel: document.getElementById('f-fuel').value,
+      color: document.getElementById('f-color').value.trim(),
+      vin: document.getElementById('f-vin').value.trim().toUpperCase(),
+      status: document.getElementById('f-status').value,
+      description: document.getElementById('f-description').value.trim(),
+      featured: document.getElementById('f-featured').checked,
+      images: [...editorImages],
+    };
+
+    if (editingId !== null) {
+      InventoryAPI.update(editingId, data);
+    } else {
+      InventoryAPI.add(data);
+    }
+
+    closeVehicleEditor();
+    renderList();
+    return false;
+  }
+
+  // ===== Delete confirm =====
+  let pendingDeleteId = null;
+  function askDelete(id) {
+    const v = InventoryAPI.getById(id);
+    if (!v) return;
+    pendingDeleteId = id;
+    document.getElementById('confirm-text').textContent =
+      `${titleOf(v)} (${fmt(v.price)}) will be permanently removed.`;
+    const modal = document.getElementById('confirm-modal');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+  }
+  function closeConfirm() {
+    pendingDeleteId = null;
+    const modal = document.getElementById('confirm-modal');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  }
+  document.getElementById('confirm-yes').addEventListener('click', () => {
+    if (pendingDeleteId !== null) {
+      InventoryAPI.remove(pendingDeleteId);
+      closeConfirm();
+      renderList();
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zaiairie Auto Sales — Quality Used Cars in Newburgh, NY</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: {
+        brand: { navy: '#0f1e34', navy2: '#162a47', gold: '#d4a64a', goldDark: '#b8902f' },
+      },
+      fontFamily: { sans: ['system-ui','-apple-system','Segoe UI','Roboto','sans-serif'] },
+    }},
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  .hero-overlay { background: linear-gradient(135deg, rgba(15,30,52,0.92) 0%, rgba(15,30,52,0.75) 100%); }
+  .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
+  .thumb-active { outline: 3px solid #d4a64a; outline-offset: 2px; }
+</style>
+</head>
+<body class="font-sans text-slate-800 bg-white">
+
+<!-- ===== NAV ===== -->
+<header class="sticky top-0 z-40 bg-brand-navy text-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+    <a href="#home" class="flex items-center gap-2.5">
+      <svg viewBox="0 0 40 40" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" fill="#d4a64a" stroke="#b8902f" stroke-width="1.5"/>
+        <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0f1e34" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+        <line x1="11" y1="20" x2="29" y2="20" stroke="#0f1e34" stroke-width="1.5" opacity="0.4"/>
+      </svg>
+      <div class="leading-tight">
+        <div class="font-bold text-base tracking-tight">Zaiairie Auto Sales</div>
+        <div class="text-[10px] text-brand-gold uppercase tracking-widest">Newburgh, NY</div>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <a href="#inventory" class="hover:text-brand-gold transition">Inventory</a>
+      <a href="#about" class="hover:text-brand-gold transition">About</a>
+      <a href="#contact" class="hover:text-brand-gold transition">Contact</a>
+      <a href="tel:8456855521" class="bg-brand-gold text-brand-navy px-4 py-2 rounded font-semibold hover:bg-brand-goldDark transition">
+        (845) 685-5521
+      </a>
+    </nav>
+    <a href="tel:8456855521" class="md:hidden bg-brand-gold text-brand-navy px-3 py-1.5 rounded text-sm font-semibold">Call</a>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section id="home" class="relative">
+  <div class="absolute inset-0">
+    <img src="showroom-hero.jpg" alt="Zaiairie Auto Sales indoor showroom in Newburgh, NY" class="w-full h-full object-cover" />
+    <div class="absolute inset-0 hero-overlay"></div>
+  </div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36 text-white">
+    <p class="text-brand-gold font-semibold tracking-wider uppercase text-sm mb-4">Newburgh, NY · Indoor Showroom</p>
+    <h1 class="text-4xl md:text-6xl font-bold leading-tight max-w-3xl">
+      Quality used cars.<br/>No pressure, fair prices.
+    </h1>
+    <p class="mt-6 text-lg md:text-xl text-slate-200 max-w-2xl">
+      Family-run dealership serving the Hudson Valley. Every vehicle inspected, every price straightforward — and every test drive starts indoors, out of the weather.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="#inventory" class="bg-brand-gold text-brand-navy px-6 py-3 rounded font-semibold hover:bg-brand-goldDark transition">
+        Browse Inventory
+      </a>
+      <a href="#contact" class="border border-white/40 text-white px-6 py-3 rounded font-semibold hover:bg-white/10 transition">
+        Visit the Showroom
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED ===== -->
+<section class="bg-slate-50 py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <p class="text-brand-gold font-semibold uppercase tracking-wider text-sm">This Week</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-brand-navy mt-1">Featured Vehicles</h2>
+      </div>
+      <a href="#inventory" class="hidden md:inline text-brand-navy font-semibold hover:text-brand-gold">View all →</a>
+    </div>
+    <div id="featured-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+  </div>
+</section>
+
+<!-- ===== INVENTORY ===== -->
+<section id="inventory" class="py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-brand-navy mb-2">Our Inventory</h2>
+    <p class="text-slate-600 mb-8">Every vehicle inspected and ready to drive home today.</p>
+
+    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+      <select id="filter-make" class="bg-white border border-slate-300 rounded px-3 py-2 text-sm">
+        <option value="">All Makes</option>
+      </select>
+      <select id="filter-body" class="bg-white border border-slate-300 rounded px-3 py-2 text-sm">
+        <option value="">All Body Styles</option>
+      </select>
+      <select id="filter-price" class="bg-white border border-slate-300 rounded px-3 py-2 text-sm">
+        <option value="">Any Price</option>
+        <option value="0-10000">Under $10,000</option>
+        <option value="10000-20000">$10k – $20k</option>
+        <option value="20000-999999">$20k+</option>
+      </select>
+      <select id="filter-sort" class="bg-white border border-slate-300 rounded px-3 py-2 text-sm">
+        <option value="newest">Sort: Newest</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="mileage">Mileage</option>
+      </select>
+    </div>
+
+    <div id="inventory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <p id="inventory-empty" class="text-center text-slate-500 py-12 hidden">No vehicles match those filters.</p>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about" class="bg-brand-navy text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <p class="text-brand-gold font-semibold uppercase tracking-wider text-sm">About Us</p>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2">A neighborhood dealer, built on trust.</h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Zaiairie Auto Sales gives the Hudson Valley a better way to buy used — no gimmicks, no pressure, and prices that make sense. Every car goes through a full inspection before it's listed, and we'll tell you the good and the bad before you ever sign anything.
+        </p>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          <em class="text-slate-400">[Placeholder — replace with the owner's actual story.]</em>
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-brand-navy2 p-6 rounded-lg"><div class="text-brand-gold text-3xl font-bold">✓</div><h3 class="font-semibold mt-2">Inspected</h3><p class="text-sm text-slate-400 mt-1">Every car checked before listing.</p></div>
+        <div class="bg-brand-navy2 p-6 rounded-lg"><div class="text-brand-gold text-3xl font-bold">$</div><h3 class="font-semibold mt-2">Fair Pricing</h3><p class="text-sm text-slate-400 mt-1">Market-based, no haggling games.</p></div>
+        <div class="bg-brand-navy2 p-6 rounded-lg"><div class="text-brand-gold text-3xl font-bold">↻</div><h3 class="font-semibold mt-2">Trade-Ins</h3><p class="text-sm text-slate-400 mt-1">Bring your current ride, we'll work with you.</p></div>
+        <div class="bg-brand-navy2 p-6 rounded-lg"><div class="text-brand-gold text-3xl font-bold">♥</div><h3 class="font-semibold mt-2">Local</h3><p class="text-sm text-slate-400 mt-1">Family-run, in your neighborhood.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact" class="py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 gap-12">
+      <div>
+        <p class="text-brand-gold font-semibold uppercase tracking-wider text-sm">Come Say Hi</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-brand-navy mt-2">Visit the Showroom</h2>
+        <p class="text-slate-600 mt-4">Best way to find your next car is to come kick the tires. Open seven days a week.</p>
+        <div class="mt-8 space-y-4">
+          <div class="flex gap-3"><div class="text-brand-gold font-bold w-6">📍</div><div><div class="font-semibold">24 Johnes St, Suite M</div><div class="text-slate-600 text-sm">Newburgh, NY 12550</div></div></div>
+          <div class="flex gap-3"><div class="text-brand-gold font-bold w-6">📞</div><div><a href="tel:8456855521" class="font-semibold hover:text-brand-gold">(845) 685-5521</a><div class="text-slate-600 text-sm">Call or text anytime</div></div></div>
+          <div class="flex gap-3"><div class="text-brand-gold font-bold w-6">✉️</div><div><a href="mailto:zaiairieautosalesllc@gmail.com" class="font-semibold hover:text-brand-gold break-all">zaiairieautosalesllc@gmail.com</a></div></div>
+          <div class="flex gap-3"><div class="text-brand-gold font-bold w-6">🕐</div><div><div class="font-semibold">Hours</div><div class="text-slate-600 text-sm">Open 7 days a week<br/>9:00 AM – 5:00 PM</div></div></div>
+        </div>
+      </div>
+      <div class="rounded-lg overflow-hidden border border-slate-200 min-h-[300px]">
+        <iframe src="https://www.google.com/maps?q=24+Johnes+St,+Newburgh,+NY+12550&output=embed"
+          width="100%" height="100%" style="border:0; min-height:300px;"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="Zaiairie Auto Sales location"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-brand-navy text-slate-300 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <svg viewBox="0 0 40 40" class="w-8 h-8" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="19" fill="#d4a64a" stroke="#b8902f" stroke-width="1.5"/>
+          <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0f1e34" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+          <line x1="11" y1="20" x2="29" y2="20" stroke="#0f1e34" stroke-width="1.5" opacity="0.4"/>
+        </svg>
+        <span class="font-bold text-white">Zaiairie Auto Sales LLC</span>
+      </div>
+      <p class="text-sm text-slate-400">Quality used cars in the Hudson Valley.</p>
+      <a href="https://www.facebook.com/profile.php?id=100083186683882" target="_blank" rel="noopener"
+         class="inline-block mt-3 text-sm text-slate-400 hover:text-brand-gold">Find us on Facebook →</a>
+    </div>
+    <div class="text-sm text-slate-400 md:text-right">
+      <p>24 Johnes St, Suite M, Newburgh, NY 12550</p>
+      <p>NY Dealer License #XXXXXX <span class="text-slate-500">(add real number)</span></p>
+      <p>© 2026 Zaiairie Auto Sales LLC. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== VEHICLE DETAIL MODAL ===== -->
+<div id="vehicle-modal" class="fixed inset-0 bg-black/70 z-50 hidden items-start justify-center overflow-y-auto p-4">
+  <div class="bg-white rounded-lg max-w-5xl w-full my-8 overflow-hidden shadow-2xl">
+    <div class="flex justify-between items-center px-6 py-4 border-b border-slate-200 sticky top-0 bg-white z-10">
+      <h3 id="modal-title" class="text-xl font-bold text-brand-navy"></h3>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 text-3xl leading-none">&times;</button>
+    </div>
+    <div class="p-6">
+      <div class="mb-6">
+        <img id="modal-img-main" src="" alt="" class="w-full h-96 object-cover rounded-lg bg-slate-100" />
+        <div id="modal-thumbs" class="flex gap-2 mt-3 overflow-x-auto pb-2"></div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <div id="modal-price" class="text-3xl font-bold text-brand-navy mb-1"></div>
+          <div id="modal-status" class="mb-4"></div>
+          <dl id="modal-specs" class="space-y-2 text-sm"></dl>
+          <div id="modal-description" class="mt-4 text-slate-600 text-sm leading-relaxed"></div>
+        </div>
+        <div>
+          <h4 class="font-semibold text-brand-navy mb-2">Interested?</h4>
+          <p class="text-slate-600 text-sm mb-4">Call or text us, or send a quick request and we'll get back to you.</p>
+          <a href="tel:8456855521" class="block text-center bg-brand-gold text-brand-navy px-6 py-3 rounded font-semibold hover:bg-brand-goldDark transition">
+            Call (845) 685-5521
+          </a>
+          <a href="sms:8456855521" class="block text-center mt-2 border border-brand-navy text-brand-navy px-6 py-3 rounded font-semibold hover:bg-slate-50 transition">
+            Text Us
+          </a>
+          <button onclick="openRequestForm()" class="block w-full text-center mt-2 border border-slate-300 text-slate-700 px-6 py-3 rounded font-semibold hover:bg-slate-50 transition">
+            Request Info / Check Availability
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REQUEST INFO MODAL ===== -->
+<div id="request-modal" class="fixed inset-0 bg-black/70 z-[60] hidden items-start justify-center overflow-y-auto p-4">
+  <div class="bg-white rounded-lg max-w-lg w-full my-8 overflow-hidden shadow-2xl">
+    <div class="flex justify-between items-center px-6 py-4 border-b border-slate-200">
+      <h3 class="text-xl font-bold text-brand-navy">Request Info</h3>
+      <button onclick="closeRequestForm()" class="text-slate-400 hover:text-slate-700 text-3xl leading-none">&times;</button>
+    </div>
+    <form id="request-form" class="p-6 space-y-4" onsubmit="return submitRequest(event)">
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Vehicle</label>
+        <input id="req-vehicle" type="text" readonly class="w-full bg-slate-100 border border-slate-200 rounded px-3 py-2 text-sm" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Your Name *</label>
+        <input id="req-name" type="text" required class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none" />
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Phone *</label>
+          <input id="req-phone" type="tel" required class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
+          <input id="req-email" type="email" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Message</label>
+        <textarea id="req-message" rows="3" placeholder="Is this still available? When can I see it?"
+          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none"></textarea>
+      </div>
+      <p class="text-xs text-slate-500">
+        Submitting this opens your email app with a pre-filled message to us. Or just call (845) 685-5521 — fastest way to reach us.
+      </p>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 bg-brand-gold text-brand-navy px-4 py-2.5 rounded font-semibold hover:bg-brand-goldDark transition">
+          Send Request
+        </button>
+        <a href="tel:8456855521" class="flex-1 text-center bg-brand-navy text-white px-4 py-2.5 rounded font-semibold hover:bg-brand-navy2 transition">
+          Or Call Now
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+  let currentVehicleId = null;
+
+  function statusBadge(status) {
+    if (status === 'sold')    return '<span class="inline-block bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-semibold uppercase">Sold</span>';
+    if (status === 'pending') return '<span class="inline-block bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs font-semibold uppercase">Sale Pending</span>';
+    return '<span class="inline-block bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-semibold uppercase">Available</span>';
+  }
+
+  function cardHTML(v) {
+    const cover = (v.images && v.images[0]) || '';
+    const photoCount = (v.images || []).length;
+    return `
+      <div class="bg-white rounded-lg overflow-hidden border border-slate-200 card-hover cursor-pointer"
+           onclick="openModal(${v.id})">
+        <div class="relative">
+          ${cover
+            ? `<img src="${cover}" alt="${titleOf(v)}" class="w-full h-48 object-cover" />`
+            : `<div class="w-full h-48 bg-slate-200 flex items-center justify-center text-slate-400 text-sm">No photo</div>`}
+          <div class="absolute top-3 right-3 bg-brand-gold text-brand-navy px-3 py-1 rounded text-sm font-bold">
+            ${fmt(v.price)}
+          </div>
+          ${v.status !== 'available' ? `<div class="absolute top-3 left-3">${statusBadge(v.status)}</div>` : ''}
+          ${photoCount > 1 ? `<div class="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">📷 ${photoCount}</div>` : ''}
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg text-brand-navy">${v.year} ${v.make} ${v.model}</h3>
+          <p class="text-slate-500 text-sm">${v.trim || ''}${v.trim ? ' • ' : ''}${v.body}</p>
+          <div class="flex gap-4 mt-3 text-sm text-slate-600">
+            <span>${miles(v.mileage)}</span>
+            <span>${v.transmission}</span>
+            <span>${v.drivetrain}</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function populateFilters(all) {
+    const makes = [...new Set(all.map(v => v.make))].sort();
+    const bodies = [...new Set(all.map(v => v.body))].sort();
+    document.getElementById('filter-make').innerHTML =
+      '<option value="">All Makes</option>' + makes.map(m => `<option value="${m}">${m}</option>`).join('');
+    document.getElementById('filter-body').innerHTML =
+      '<option value="">All Body Styles</option>' + bodies.map(b => `<option value="${b}">${b}</option>`).join('');
+  }
+
+  function applyFilters() {
+    const all = InventoryAPI.getAll();
+    const make = document.getElementById('filter-make').value;
+    const body = document.getElementById('filter-body').value;
+    const priceRange = document.getElementById('filter-price').value;
+    const sort = document.getElementById('filter-sort').value;
+
+    let filtered = all.filter(v => {
+      if (make && v.make !== make) return false;
+      if (body && v.body !== body) return false;
+      if (priceRange) {
+        const [min, max] = priceRange.split('-').map(Number);
+        if (v.price < min || v.price > max) return false;
+      }
+      return true;
+    });
+
+    if      (sort === 'price-asc')  filtered.sort((a,b) => a.price - b.price);
+    else if (sort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
+    else if (sort === 'mileage')    filtered.sort((a,b) => a.mileage - b.mileage);
+    else                            filtered.sort((a,b) => b.id - a.id);
+
+    const grid = document.getElementById('inventory-grid');
+    const empty = document.getElementById('inventory-empty');
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      empty.classList.remove('hidden');
+    } else {
+      empty.classList.add('hidden');
+      grid.innerHTML = filtered.map(cardHTML).join('');
+    }
+  }
+
+  function render() {
+    const all = InventoryAPI.getAll();
+    populateFilters(all);
+    document.getElementById('featured-grid').innerHTML =
+      all.filter(v => v.featured).slice(0, 3).map(cardHTML).join('') ||
+      '<p class="col-span-full text-center text-slate-500">No featured vehicles right now — see the full inventory below.</p>';
+    applyFilters();
+  }
+
+  ['filter-make','filter-body','filter-price','filter-sort'].forEach(id =>
+    document.getElementById(id).addEventListener('change', applyFilters)
+  );
+
+  function openModal(id) {
+    const v = InventoryAPI.getById(id);
+    if (!v) return;
+    currentVehicleId = id;
+
+    document.getElementById('modal-title').textContent = titleOf(v);
+    document.getElementById('modal-price').textContent = fmt(v.price);
+    document.getElementById('modal-status').innerHTML = statusBadge(v.status);
+    document.getElementById('modal-description').textContent = v.description || '';
+    document.getElementById('modal-specs').innerHTML = `
+      <div class="flex justify-between border-b border-slate-100 pb-1"><dt class="text-slate-500">Mileage</dt><dd class="font-medium">${miles(v.mileage)}</dd></div>
+      <div class="flex justify-between border-b border-slate-100 pb-1"><dt class="text-slate-500">Body</dt><dd class="font-medium">${v.body}</dd></div>
+      <div class="flex justify-between border-b border-slate-100 pb-1"><dt class="text-slate-500">Transmission</dt><dd class="font-medium">${v.transmission}</dd></div>
+      <div class="flex justify-between border-b border-slate-100 pb-1"><dt class="text-slate-500">Drivetrain</dt><dd class="font-medium">${v.drivetrain}</dd></div>
+      <div class="flex justify-between border-b border-slate-100 pb-1"><dt class="text-slate-500">Fuel</dt><dd class="font-medium">${v.fuel}</dd></div>
+      <div class="flex justify-between ${v.vin ? 'border-b border-slate-100 pb-1' : ''}"><dt class="text-slate-500">Color</dt><dd class="font-medium">${v.color}</dd></div>
+      ${v.vin ? `<div class="flex justify-between"><dt class="text-slate-500">VIN</dt><dd class="font-medium font-mono text-xs">${v.vin}</dd></div>` : ''}
+    `;
+
+    const images = v.images && v.images.length ? v.images : [];
+    const mainImg = document.getElementById('modal-img-main');
+    const thumbsEl = document.getElementById('modal-thumbs');
+    if (images.length === 0) {
+      mainImg.src = '';
+      mainImg.alt = 'No image available';
+      thumbsEl.innerHTML = '';
+    } else {
+      mainImg.src = images[0];
+      mainImg.alt = titleOf(v);
+      thumbsEl.innerHTML = images.map((src, i) => `
+        <img src="${src}" alt="thumb ${i+1}" data-idx="${i}"
+             class="h-20 w-28 object-cover rounded cursor-pointer flex-shrink-0 ${i === 0 ? 'thumb-active' : ''}"
+             onclick="selectThumb(${i})" />
+      `).join('');
+    }
+
+    const modal = document.getElementById('vehicle-modal');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+  }
+
+  function selectThumb(idx) {
+    const v = InventoryAPI.getById(currentVehicleId);
+    if (!v || !v.images[idx]) return;
+    document.getElementById('modal-img-main').src = v.images[idx];
+    document.querySelectorAll('#modal-thumbs img').forEach((el, i) => {
+      el.classList.toggle('thumb-active', i === idx);
+    });
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('vehicle-modal');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  }
+
+  document.getElementById('vehicle-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'vehicle-modal') closeModal();
+  });
+
+  function openRequestForm() {
+    const v = InventoryAPI.getById(currentVehicleId);
+    document.getElementById('req-vehicle').value = v ? titleOf(v) + ' — ' + fmt(v.price) : '';
+    const modal = document.getElementById('request-modal');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+  }
+
+  function closeRequestForm() {
+    const modal = document.getElementById('request-modal');
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+  }
+
+  function submitRequest(e) {
+    e.preventDefault();
+    const vehicle = document.getElementById('req-vehicle').value;
+    const name    = document.getElementById('req-name').value;
+    const phone   = document.getElementById('req-phone').value;
+    const email   = document.getElementById('req-email').value;
+    const message = document.getElementById('req-message').value;
+
+    const subject = `Interested in: ${vehicle}`;
+    const body =
+`Hi Zaiairie Auto Sales,
+
+I'm interested in this vehicle: ${vehicle}
+
+My info:
+Name:  ${name}
+Phone: ${phone}
+Email: ${email}
+
+Message:
+${message || '(no additional message)'}
+
+Thanks!`;
+
+    const mailto = `mailto:zaiairieautosalesllc@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+    closeRequestForm();
+    return false;
+  }
+
+  document.getElementById('request-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'request-modal') closeRequestForm();
+  });
+
+  render();
+</script>
+
+</body>
+</html>
