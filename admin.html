@@ -8,7 +8,7 @@
 <script>
   tailwind.config = {
     theme: { extend: {
-      colors: { brand: { navy: '#0f1e34', navy2: '#162a47', gold: '#d4a64a', goldDark: '#b8902f' } },
+      colors: { brand: { navy: '#0b0b0e', navy2: '#232328', gold: '#ff1f6d', goldDark: '#cf1457', steel: '#b9bdc6' } },
       fontFamily: { sans: ['system-ui','-apple-system','Segoe UI','Roboto','sans-serif'] },
     }},
   };
@@ -16,8 +16,10 @@
 <style>
   .img-tile { position: relative; }
   .img-tile.dragging { opacity: 0.4; }
-  .img-tile.drag-over { outline: 3px dashed #d4a64a; }
-  .primary-badge { position: absolute; top: 4px; left: 4px; background: #d4a64a; color: #0f1e34; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
+  .img-tile.drag-over { outline: 3px dashed #ff1f6d; }
+  .primary-badge { position: absolute; top: 4px; left: 4px; background: #ff1f6d; color: #0b0b0e; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
+
+  .racing-stripe { height: 4px; background: repeating-linear-gradient(115deg, #ff1f6d 0 14px, #b9bdc6 14px 18px, #0b0b0e 18px 32px); }
 </style>
 </head>
 <body class="font-sans bg-slate-100 min-h-screen text-slate-800">
@@ -27,9 +29,9 @@
   <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-8">
     <div class="flex items-center gap-3 mb-6">
       <svg viewBox="0 0 40 40" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="20" cy="20" r="19" fill="#d4a64a" stroke="#b8902f" stroke-width="1.5"/>
-        <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0f1e34" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
-        <line x1="11" y1="20" x2="29" y2="20" stroke="#0f1e34" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="20" cy="20" r="19" fill="#ff1f6d" stroke="#cf1457" stroke-width="1.5"/>
+        <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0b0b0e" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+        <line x1="11" y1="20" x2="29" y2="20" stroke="#0b0b0e" stroke-width="1.5" opacity="0.4"/>
       </svg>
       <div>
         <div class="font-bold">Zaiairie Auto Sales</div>
@@ -67,9 +69,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
       <div class="flex items-center gap-2.5">
         <svg viewBox="0 0 40 40" class="w-9 h-9" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="20" cy="20" r="19" fill="#d4a64a" stroke="#b8902f" stroke-width="1.5"/>
-          <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0f1e34" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
-          <line x1="11" y1="20" x2="29" y2="20" stroke="#0f1e34" stroke-width="1.5" opacity="0.4"/>
+          <circle cx="20" cy="20" r="19" fill="#ff1f6d" stroke="#cf1457" stroke-width="1.5"/>
+          <path d="M11 13 L29 13 L13 27 L29 27" stroke="#0b0b0e" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+          <line x1="11" y1="20" x2="29" y2="20" stroke="#0b0b0e" stroke-width="1.5" opacity="0.4"/>
         </svg>
         <div class="leading-tight">
           <div class="font-bold text-base">Zaiairie Admin</div>
@@ -81,7 +83,8 @@
         <button onclick="logout()" class="text-sm text-slate-300 hover:text-brand-gold">Sign Out</button>
       </div>
     </div>
-  </header>
+    <div class="racing-stripe"></div>
+</header>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex items-center justify-between mb-6">
